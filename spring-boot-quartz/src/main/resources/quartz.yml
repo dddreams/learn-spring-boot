@@ -1,0 +1,27 @@
+org:
+  quartz:
+    jobStore:
+      useProperties: false
+      tablePrefix: qrtz_
+      # 开启集群模式
+      isClustered: true
+      # 集群实例检测时间间隔 ms
+      clusterCheckinInterval: 5000
+      # misfire 任务的超时阈值 ms
+      misfireThreshold: 60000
+      txIsolationLevelReadCommitted: true
+      class: org.quartz.impl.jdbcjobstore.JobStoreTX
+      driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+
+    scheduler:
+      instanceId: AUTO
+      rmi.export: false
+      rmi.proxy: false
+      wrapJobExecutionInUserTransaction: false
+
+    # 工作线程的线程池设置
+    threadPool:
+      class: org.quartz.simpl.SimpleThreadPool
+      threadCount: 25
+      threadPriority: 5
+      threadsInheritContextClassLoaderOfInitializingThread: true
