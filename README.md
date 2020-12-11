@@ -34,50 +34,51 @@ spring-boot hello world
 **使用 quartz 遇到的问题**
 - 在定时任务执行中 service @Autowired 注解不进来
   创建 JobFactory 的Bean，并在 SchedulerConfig 中添加到 SchedulerFactoryBean
-  ```
-// JobFactory
-@Component
-public class JobFactory extends SpringBeanJobFactory implements ApplicationContextAware {
-    @Autowired
-    private transient AutowireCapableBeanFactory beanFactory;
-    @Override
-    public void setApplicationContext(final ApplicationContext context) {
-        beanFactory = context.getAutowireCapableBeanFactory();
-    }
-    @Override
-    protected Object createJobInstance(final TriggerFiredBundle bundle) throws Exception {
-        final Object job = super.createJobInstance(bundle);
-        beanFactory.autowireBean(job);
-        return job;
-    }
-}
+	```
+	// JobFactory
+	@Component
+	public class JobFactory extends SpringBeanJobFactory implements ApplicationContextAware {
+	    @Autowired
+	    private transient AutowireCapableBeanFactory beanFactory;
+	    @Override
+	    public void setApplicationContext(final ApplicationContext context) {
+	        beanFactory = context.getAutowireCapableBeanFactory();
+	    }
+	    @Override
+	    protected Object createJobInstance(final TriggerFiredBundle bundle) throws Exception {
+	        final Object job = super.createJobInstance(bundle);
+	        beanFactory.autowireBean(job);
+	        return job;
+	    }
+	}
+	
+	// SchedulerConfig
+	@Configuration
+	public class SchedulerConfig {
+	    @Autowired
+	    private DataSource dataSource;
+	    @Autowired
+	    private JobFactory jobFactory;
+	    @Bean
+	    public Properties quartzProperties() throws IOException {
+	        PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
+	        propertiesFactoryBean.setLocation(new ClassPathResource("/quartz.yml"));
+	        propertiesFactoryBean.afterPropertiesSet();
+	        return propertiesFactoryBean.getObject();
+	    }
+	    @Bean
+	    public SchedulerFactoryBean schedulerFactoryBean() throws IOException {
+	        SchedulerFactoryBean factory = new SchedulerFactoryBean();
+	        factory.setSchedulerName("Cluster_Scheduler");
+	        factory.setDataSource(dataSource);
+	        factory.setApplicationContextSchedulerContextKey("applicationContext");
+	        factory.setQuartzProperties(quartzProperties());
+	        factory.setJobFactory(jobFactory);
+	        return factory;
+	    }
+	}
+	```
 
-// SchedulerConfig
-@Configuration
-public class SchedulerConfig {
-    @Autowired
-    private DataSource dataSource;
-    @Autowired
-    private JobFactory jobFactory;
-    @Bean
-    public Properties quartzProperties() throws IOException {
-        PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
-        propertiesFactoryBean.setLocation(new ClassPathResource("/quartz.yml"));
-        propertiesFactoryBean.afterPropertiesSet();
-        return propertiesFactoryBean.getObject();
-    }
-    @Bean
-    public SchedulerFactoryBean schedulerFactoryBean() throws IOException {
-        SchedulerFactoryBean factory = new SchedulerFactoryBean();
-        factory.setSchedulerName("Cluster_Scheduler");
-        factory.setDataSource(dataSource);
-        factory.setApplicationContextSchedulerContextKey("applicationContext");
-        factory.setQuartzProperties(quartzProperties());
-        factory.setJobFactory(jobFactory);
-        return factory;
-    }
-}
-  ```
 - quartz 任务激活失败
     
     在Quartz中，当一个持久化的触发器会因为：
@@ -90,36 +91,36 @@ public class SchedulerConfig {
 
 	可以设置 quartz中CornTrigger使用的策略
 	```
-//所有的misfile任务马上执行
-public static final int MISFIRE_INSTRUCTION_IGNORE_MISFIRE_POLICY = -1;
-//在Trigger中默认选择MISFIRE_INSTRUCTION_FIRE_ONCE_NOW 策略
-public static final int MISFIRE_INSTRUCTION_SMART_POLICY = 0;
-// CornTrigger默认策略，合并部分misfire，正常执行下一个周期的任务。
-public static final int MISFIRE_INSTRUCTION_FIRE_ONCE_NOW = 1;
-//所有的misFire都不管，执行下一个周期的任务。
-public static final int MISFIRE_INSTRUCTION_DO_NOTHING = 2;
+	//所有的misfile任务马上执行
+	public static final int MISFIRE_INSTRUCTION_IGNORE_MISFIRE_POLICY = -1;
+	//在Trigger中默认选择MISFIRE_INSTRUCTION_FIRE_ONCE_NOW 策略
+	public static final int MISFIRE_INSTRUCTION_SMART_POLICY = 0;
+	// CornTrigger默认策略，合并部分misfire，正常执行下一个周期的任务。
+	public static final int MISFIRE_INSTRUCTION_FIRE_ONCE_NOW = 1;
+	//所有的misFire都不管，执行下一个周期的任务。
+	public static final int MISFIRE_INSTRUCTION_DO_NOTHING = 2;
 	```
 	1、 通过setMisfireInstruction方法设置misfire策略。
 	```
-CronTriggerFactoryBean triggerFactoryBean = new CronTriggerFactoryBean();
-triggerFactoryBean.setName("corn_" + clazzName);
-triggerFactoryBean.setJobDetail(jobFactory.getObject());
-triggerFactoryBean.setCronExpression(quartzCorn);
-triggerFactoryBean.setGroup(QUARTZ_TRIGGER_GROUP);
-//设置misfire策略
-triggerFactoryBean.setMisfireInstruction(CronTrigger.MISFIRE_INSTRUCTION_IGNORE_MISFIRE_POLICY);
-triggerFactoryBean.afterPropertiesSet();
+	CronTriggerFactoryBean triggerFactoryBean = new CronTriggerFactoryBean();
+	triggerFactoryBean.setName("corn_" + clazzName);
+	triggerFactoryBean.setJobDetail(jobFactory.getObject());
+	triggerFactoryBean.setCronExpression(quartzCorn);
+	triggerFactoryBean.setGroup(QUARTZ_TRIGGER_GROUP);
+	//设置misfire策略
+	triggerFactoryBean.setMisfireInstruction(CronTrigger.MISFIRE_INSTRUCTION_IGNORE_MISFIRE_POLICY);
+	triggerFactoryBean.afterPropertiesSet();
 	```
 
 	2、 也可以通过CronScheduleBuilder设置misfire策略。
 	```
-CronScheduleBuilder csb = CronScheduleBuilder.cronSchedule("0/5 * * * * ?");
-//MISFIRE_INSTRUCTION_DO_NOTHING 
-csb.withMisfireHandlingInstructionDoNothing();
-//MISFIRE_INSTRUCTION_FIRE_ONCE_NOW
-csb.withMisfireHandlingInstructionFireAndProceed();//(默认)
-//MISFIRE_INSTRUCTION_IGNORE_MISFIRE_POLICY
-csb.withMisfireHandlingInstructionIgnoreMisfires();
+	CronScheduleBuilder csb = CronScheduleBuilder.cronSchedule("0/5 * * * * ?");
+	//MISFIRE_INSTRUCTION_DO_NOTHING 
+	csb.withMisfireHandlingInstructionDoNothing();
+	//MISFIRE_INSTRUCTION_FIRE_ONCE_NOW
+	csb.withMisfireHandlingInstructionFireAndProceed();//(默认)
+	//MISFIRE_INSTRUCTION_IGNORE_MISFIRE_POLICY
+	csb.withMisfireHandlingInstructionIgnoreMisfires();
 	```
 
 
