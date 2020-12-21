@@ -8,7 +8,7 @@ spring-boot hello world
 
 [入坑SpringBoot](https://dddreams.github.io/180710-入坑SpringBoot.html)
 
-### spring-boot 自身的定时任务
+### spring-boot 的定时任务
 
 ### spring-boot 集成 quartz 作业调度
 
