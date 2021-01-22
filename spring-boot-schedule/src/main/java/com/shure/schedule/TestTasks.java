@@ -12,4 +12,9 @@ public class TestTasks {
     public void testTask() {
         log.info("哈哈，我执行了！");
     }
+
+    @Scheduled(fixedRate = 60000)
+    public void testTask1() {
+        log.info("哈哈，我又执行了！");
+    }
 }
