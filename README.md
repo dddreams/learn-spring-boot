@@ -14,6 +14,8 @@ spring-boot hello world
 
 ### spring-boot 集成 quartz 作业调度
 
+[SpringBoot-集成Quartz作业调度](https://dddreams.github.io/210125-SpringBoot-%E9%9B%86%E6%88%90Quartz%E4%BD%9C%E4%B8%9A%E8%B0%83%E5%BA%A6.html)
+
 ### spring-boot 集成 redis 缓存
 
 ### spring-boot 集成 Memcached 缓存
