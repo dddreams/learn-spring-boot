@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: spring-boot-swagger2
+
+swagger2:
+  enable: true
