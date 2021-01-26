@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: spring-boot-thymeleaf
+
+  thymeleaf:
+    cache: false
+    # 在构建 URL 时添加到视图名称前的前缀（默认值： classpath:/templates/ ）
+    prefix: classpath:/templates/
+    # 在构建 URL 时添加到视图名称后的后缀（默认值： .html ）
+    suffix: .html

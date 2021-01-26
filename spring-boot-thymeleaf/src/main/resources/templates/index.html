@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>spring-boot-thymeleaf</title>
+</head>
+<body>
+    <h2 th:text="${title}">用户列表</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>性别</th>
+            <th>住址</th>
+        </tr>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}">1</td>
+            <td th:text="${user.name}">Tom</td>
+            <td th:text="${user.age}">10</td>
+            <td th:text="${user.gender ? '男' : '女'}">男</td>
+            <td th:text="${user.address}">北京</td>
+        </tr>
+    </table>
+</body>
+</html>

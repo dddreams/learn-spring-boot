@@ -55,8 +55,7 @@
 
 ## 我的公众号
 
-<a href="https://sm.ms/image/zP4Vh5trDN3aKIJ" target="_blank">
-	<img src="https://i.loli.net/2021/01/26/zP4Vh5trDN3aKIJ.jpg" width="50%" />
-</a>
+<img src="https://i.loli.net/2021/01/26/zP4Vh5trDN3aKIJ.jpg" width="50%" />
+
 
  
