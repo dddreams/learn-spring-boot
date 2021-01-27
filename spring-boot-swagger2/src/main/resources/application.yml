@@ -2,5 +2,8 @@ spring:
   application:
     name: spring-boot-swagger2
 
-swagger2:
+swagger:
   enable: true
+
+#  ui-config:
+#    operations-sorter: method # 默认 alpha 按字母顺序
