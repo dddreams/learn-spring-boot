@@ -13,6 +13,8 @@
 
 ### spring boot 集成Swagger2文档生成
 
+[SpringBoot-集成Swagger2文档生成](https://dddreams.github.io/210127-SpringBoot-%E9%9B%86%E6%88%90Swagger2%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90.html)
+
 ### spring boot 使用JdbcTemplate操作数据库
 
 ### spring boot JdbcTemplate的多数据源配置
