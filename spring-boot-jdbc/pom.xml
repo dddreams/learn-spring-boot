@@ -38,7 +38,6 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.driver}</version>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
