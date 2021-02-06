@@ -17,6 +17,8 @@
 
 ### spring boot 使用JdbcTemplate操作数据库
 
+[SpringBoot-使用JdbcTemplate操作数据库](https://dddreams.github.io/210206-SpringBoot-%E4%BD%BF%E7%94%A8JdbcTemplate%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E5%BA%93.html)
+
 ### spring boot JdbcTemplate的多数据源配置
 
 ### spring boot jpa的使用
